@@ -52,7 +52,10 @@ bool StudentTextEditor::save(std::string file) {
     std::list<std::string>::iterator stringIt;
     stringIt = m_lines.begin();
     while (stringIt != m_lines.end())
+    {
         outfile << *stringIt + '\n'; // Appending \n to all lines of current text
+        stringIt++;
+    }
     return true;
 }
 
@@ -60,7 +63,7 @@ void StudentTextEditor::reset() {
     m_lines.clear(); // Clear container and reset position
     m_curRow = 0;
     m_curCol = 0;
-    m_undoPtr->clear();
+    m_undoPtr->clear(); // Clear undo pointer's stack
 }
 
 void StudentTextEditor::move(Dir dir) {
@@ -161,7 +164,7 @@ void StudentTextEditor::insert(char ch) {
     if (ch == '\t')
     {
         m_rowIt->insert(m_curCol, 4, ' ');
-        m_undoPtr->submit(Undo::INSERT, m_curRow, m_curCol + 1, ' ');
+        m_undoPtr->submit(Undo::INSERT, m_curRow, m_curCol + 1, ' '); // Assigning before so that
         m_curCol += 4; // If a tab, insert 4 spaces and increase the columns by 4
     }
     else
@@ -173,7 +176,7 @@ void StudentTextEditor::insert(char ch) {
 }
 
 void StudentTextEditor::enter() {
-    m_undoPtr->submit(Undo::SPLIT, m_curRow, m_curCol);
+    m_undoPtr->submit(Undo::SPLIT, m_curRow, m_curCol); // Assigning location before split happens in undo
     std::list<std::string>::iterator insertIt;
     insertIt = m_rowIt;
     insertIt++;
@@ -223,7 +226,7 @@ void StudentTextEditor::undo() {
     Undo::Action look = m_undoPtr->get(row, col, count, text);
     if (look == Undo::ERROR)
     {
-        row = m_curRow;
+        row = m_curRow; // Nothing should happen to row and col if error
         col = m_curCol;
     }
     int diff = abs(m_curRow - row); // Calculating difference between current row and desired start row
@@ -246,10 +249,10 @@ void StudentTextEditor::undo() {
             return;
             break;
         case Undo::INSERT:
-            m_rowIt->insert(m_curCol, text);
+            m_rowIt->insert(m_curCol, text); // Inserting returned text to col and row returned
             break;
         case Undo::DELETE:
-            m_rowIt->erase(m_curCol, count);
+            m_rowIt->erase(m_curCol, count); // Deleting text to where col and row returned
             break;
         case Undo::SPLIT: {
             stringIt++;
@@ -261,7 +264,7 @@ void StudentTextEditor::undo() {
         case Undo::JOIN:
             stringIt++;
             *m_rowIt += *stringIt;
-            m_lines.erase(stringIt);
+            m_lines.erase(stringIt); // Joining the two lines
             break;
     }
     // TODO
