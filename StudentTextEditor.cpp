@@ -164,7 +164,8 @@ void StudentTextEditor::insert(char ch) {
     if (ch == '\t')
     {
         m_rowIt->insert(m_curCol, 4, ' ');
-        m_undoPtr->submit(Undo::INSERT, m_curRow, m_curCol + 1, ' '); // Assigning before so that
+        for (int i = 1; i < 5; i++)
+            m_undoPtr->submit(Undo::INSERT, m_curRow, m_curCol + i, ' '); // Used to properly work with batching, given how batching is implemented
         m_curCol += 4; // If a tab, insert 4 spaces and increase the columns by 4
     }
     else

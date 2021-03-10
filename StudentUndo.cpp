@@ -3,7 +3,7 @@
 
 Undo* createUndo()
 {
-	return new StudentUndo;
+    return new StudentUndo;
 }
 
 void StudentUndo::submit(const Action action, int row, int col, char ch) {
