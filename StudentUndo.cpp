@@ -1,4 +1,5 @@
 #include "StudentUndo.h"
+#include <stack>
 
 Undo* createUndo()
 {
@@ -27,7 +28,7 @@ void StudentUndo::submit(const Action action, int row, int col, char ch) {
                 undoStack.top().chars += ch;
             wasAdded = true;
         }
-        if (action == Action::INSERT && (colDiff == -1) && ch != ' ') // Batching for inserts, where inserts result in column increasing and difference in inserts = -1 between top and new insert. Spaces not considered for undo
+        if (action == Action::INSERT && (colDiff == -1)) // Batching for inserts, where inserts result in column increasing and difference in inserts = -1 between top and new insert.
         { // May remove ch != ' '
             undoStack.top().chars += ch;
             undoStack.top().countFromStart++;
@@ -80,6 +81,8 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
             col = lastActionCol;
             count = 1;
             text = "";
+            break;
+        case Undo::ERROR:
             break;
     }
     undoStack.pop();
