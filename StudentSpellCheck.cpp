@@ -63,6 +63,8 @@ bool StudentSpellCheck::load(std::string dictionaryFile) {
     std::ifstream infile(dictionaryFile);
     if (!infile)
         return false;
+    if (root != nullptr)
+        trieDestructorHelper(root); // If dictionary already loaded and want to load a new dictionary, must clear out the old dictionary
     root = getNode();
     std::string s;
     while (getline(infile, s))
