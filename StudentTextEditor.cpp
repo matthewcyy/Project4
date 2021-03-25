@@ -134,6 +134,8 @@ void StudentTextEditor::del() {
     {
         if (m_rowIt->size() == 0)
             return;
+        if (m_curCol == m_rowIt->size() && m_curRow == m_lines.size() - 1) //  If just after the last character on the last line, then does nothing
+            return;
         char c = m_rowIt->at(m_curCol);
         m_rowIt->erase(m_curCol, 1); // Just removing the examined character
         m_undoPtr->submit(Undo::DELETE, m_curRow, m_curCol, c);
